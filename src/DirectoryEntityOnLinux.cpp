@@ -174,23 +174,23 @@ void DirectoryEntityOnLinux::CreateRootDirectory() {
 
 // サブディレクトリの構成を表すメモリ情報を返す
 vector<unique_ptr<DirectoryEntityOnLinux>> DirectoryEntityOnLinux::GetDirectories() {
-    return subDirectories;
+    return move(subDirectories);
 }
 
 // サブディレクトリの構成に引数のメモリ情報を追加する
 void DirectoryEntityOnLinux::AddDirectory(
         unique_ptr<DirectoryEntityOnLinux> arg) {
-    subDirectories.push_back(arg);
+    subDirectories.push_back(move(arg));
 }
 
 // このインスタンスが表すディレクトリ直下のファイルを表すメモリ情報を返す
 vector<unique_ptr<FileEntityOnLinux>> DirectoryEntityOnLinux::GetFiles() {
-    return files;
+    return move(files);
 }
 
 // このインスタンスが表すディレクトリにファイルを表すメモリ情報を追加する
 void DirectoryEntityOnLinux::AddFile(unique_ptr<FileEntityOnLinux> arg) {
-    files.push_back(arg);
+    files.push_back(move(arg));
 }
 
 // ディレクトリ作成 ( CreateRootDirectory, CreateDir ) が成功している場合 true を返す

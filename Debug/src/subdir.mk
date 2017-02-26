@@ -5,15 +5,18 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/DirectoryEntityOnLinux.cpp \
-../src/FileEntityOnLinux.cpp 
+../src/FileEntityOnLinux.cpp \
+../src/TestRun.cpp 
 
 OBJS += \
 ./src/DirectoryEntityOnLinux.o \
-./src/FileEntityOnLinux.o 
+./src/FileEntityOnLinux.o \
+./src/TestRun.o 
 
 CPP_DEPS += \
 ./src/DirectoryEntityOnLinux.d \
-./src/FileEntityOnLinux.d 
+./src/FileEntityOnLinux.d \
+./src/TestRun.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
