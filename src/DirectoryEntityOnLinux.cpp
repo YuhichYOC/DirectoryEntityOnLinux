@@ -164,98 +164,68 @@ void DirectoryEntityOnLinux::CreateRootDirectory() {
 
     if (!FindDir(fullPath)) {
         int ret = mkdir(fullPath.c_str(), S_IRWXU);
-        if (ret != 0) {
-            createSuccess = false;
+        if (ret == 0) {
+            createSuccess = true;
         }
     }
 }
 
 // サブディレクトリの構成を表すメモリ情報をセットする
 void DirectoryEntityOnLinux::SetDirectories(
-        vector<DirectoryEntityOnLinux *> * arg)
-        {
+        vector<unique_ptr<DirectoryEntityOnLinux>> arg) {
     subDirectories = arg;
 }
 
 // サブディレクトリの構成を表すメモリ情報を返す
-vector<DirectoryEntityOnLinux *> * DirectoryEntityOnLinux::GetDirectories()
-{
+vector<unique_ptr<DirectoryEntityOnLinux>> DirectoryEntityOnLinux::GetDirectories() {
     return subDirectories;
 }
 
 // サブディレクトリの構成に引数のメモリ情報を追加する
-void DirectoryEntityOnLinux::AddDirectory(DirectoryEntityOnLinux * arg)
-        {
-    subDirectories->push_back(arg);
+void DirectoryEntityOnLinux::AddDirectory(DirectoryEntityOnLinux arg) {
+    subDirectories.push_back(unique_ptr<DirectoryEntityOnLinux>(arg));
 }
 
 // このインスタンスが表すディレクトリにファイルを表すメモリ情報をセットする
-void DirectoryEntityOnLinux::SetFiles(vector<FileEntityOnLinux *> * arg)
-        {
+void DirectoryEntityOnLinux::SetFiles(
+        vector<unique_ptr<FileEntityOnLinux>> arg) {
     files = arg;
 }
 
 // このインスタンスが表すディレクトリ直下のファイルを表すメモリ情報を返す
-vector<FileEntityOnLinux *> * DirectoryEntityOnLinux::GetFiles()
-{
+vector<unique_ptr<FileEntityOnLinux>> DirectoryEntityOnLinux::GetFiles() {
     return files;
 }
 
 // このインスタンスが表すディレクトリにファイルを表すメモリ情報を追加する
-void DirectoryEntityOnLinux::AddFile(FileEntityOnLinux * arg)
-        {
-    files->push_back(arg);
+void DirectoryEntityOnLinux::AddFile(FileEntityOnLinux arg) {
+    files.push_back(unique_ptr<FileEntityOnLinux>(arg));
 }
 
 // ディレクトリ作成 ( CreateRootDirectory, CreateDir ) が成功している場合 true を返す
-bool DirectoryEntityOnLinux::IsCreateSuccess()
-{
+bool DirectoryEntityOnLinux::IsCreateSuccess() {
     return createSuccess;
 }
 
 // ディレクトリ削除 ( DeleteExistingDir, DeleteExistingDirNoRecursive ) が成功している場合 true を返す
-bool DirectoryEntityOnLinux::IsDeleteSuccess()
-{
+bool DirectoryEntityOnLinux::IsDeleteSuccess() {
     return deleteSuccess;
 }
 
 // ディレクトリ作成
-void DirectoryEntityOnLinux::CreateDir()
-{
+void DirectoryEntityOnLinux::CreateDir() {
     createSuccess = false;
 
     if (!FindDir()) {
-        WCharString path;
-        unique_ptr<wchar_t> dirPath = move(path.Value(fullPath).ToWChar());
-        int ret = CreateDirectory((LPCWSTR) dirPath.get(), nullptr);
-        if (ret != 0) {
+        int ret = mkdir(fullPath.c_str(), S_IRWXU);
+        if (ret == 0) {
             createSuccess = true;
-        }
-    }
-}
-
-// 引数のパスにディレクトリを作成する
-void DirectoryEntityOnLinux::CreateDir(string arg)
-        {
-    createSuccess = false;
-
-    if (!FindDir()) {
-        WCharString path;
-        unique_ptr<wchar_t> dirPath = move(
-                path.Value(fullPath).Append("\\").Append(arg).ToWChar());
-        int ret = CreateDirectory((LPCWSTR) dirPath.get(), nullptr);
-        if (ret != 0) {
-            createSuccess = true;
-            DirectoryEntityOnLinux * addDir = new DirectoryEntityOnLinux();
-            addDir->SetDirectory(arg);
-            subDirectories->push_back(addDir);
         }
     }
 }
 
 // ディレクトリが実在する場合 true を返す
-bool DirectoryEntityOnLinux::FindDir()
-{
+bool DirectoryEntityOnLinux::FindDir() {
     WCharString path;
     unique_ptr<wchar_t> dirPath = move(path.Value(fullPath).ToWChar());
     if (PathFileExists((LPCWSTR) dirPath.get())) {

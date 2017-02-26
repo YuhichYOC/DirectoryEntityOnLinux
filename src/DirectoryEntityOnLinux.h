@@ -120,9 +120,6 @@ public:
     // ディレクトリ作成
     void CreateDir();
 
-    // 引数のパスにディレクトリを作成する
-    void CreateDir(string arg);
-
     // ディレクトリが実在する場合 true を返す
     bool FindDir();
 
