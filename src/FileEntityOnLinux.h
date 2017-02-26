@@ -17,6 +17,7 @@
 using namespace std;
 
 class FileEntityOnLinux {
+
 private:
 
     string directory;
@@ -141,9 +142,8 @@ public:
 
     FileEntityOnLinux();
 
-    void Dispose();
-
     ~FileEntityOnLinux();
+
 };
 
 #endif /* SRC_FILEENTITYONLINUX_H_ */

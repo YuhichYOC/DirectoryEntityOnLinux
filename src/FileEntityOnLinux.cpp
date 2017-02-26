@@ -465,11 +465,5 @@ FileEntityOnLinux::FileEntityOnLinux() {
     disposed = false;
 }
 
-void FileEntityOnLinux::Dispose() {
-}
-
 FileEntityOnLinux::~FileEntityOnLinux() {
-    if (!disposed) {
-        Dispose();
-    }
 }

@@ -17,11 +17,12 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-#include <FileEntityOnLinux.h>
+#include "FileEntityOnLinux.h"
 
 using namespace std;
 
 class DirectoryEntityOnLinux {
+
 private:
 
     // このインスタンスが表すディレクトリの名前
@@ -55,23 +56,21 @@ private:
     // ディレクトリコピー ( DirCopy ) が成功している場合 true
     bool copySuccess;
 
-    // インスタンス破棄が完了している場合 true
-    bool disposed;
-
     // ディレクトリ構成をメモリ上に展開
-    DirectoryEntityOnLinux Describe(string arg);
+    unique_ptr<DirectoryEntityOnLinux> Describe(string arg);
 
     // すでに存在するディレクトリを削除 ( DeleteExistingDir, recursive = true ) が呼び出す
-    void DeleteExistingDir(DirectoryEntityOnLinux arg);
+    void DeleteExistingDir(unique_ptr<DirectoryEntityOnLinux> arg);
 
     // すでに存在するディレクトリを削除 ( DeleteExistingDir, recursive = false ) が呼び出す
-    void DeleteExistingDirNoRecursive(DirectoryEntityOnLinux arg);
+    void DeleteExistingDirNoRecursive(unique_ptr<DirectoryEntityOnLinux> arg);
 
     // ディレクトリコピー ( DirCopy, recursive = true ) が呼び出す
-    void DirCopy(DirectoryEntityOnLinux arg1subDir, string arg2path);
+    void DirCopy(unique_ptr<DirectoryEntityOnLinux> arg1sub, string arg2path);
 
     // ディレクトリコピー ( DirCopy, recursive = false ) が呼び出す
-    void DirCopyNoRecursive(DirectoryEntityOnLinux arg1subDir, string arg2path);
+    void DirCopyNoRecursive(unique_ptr<DirectoryEntityOnLinux> arg1sub,
+            string arg2path);
 
 public:
 
@@ -93,23 +92,17 @@ public:
     // このインスタンスが表すディレクトリそのものをファイルシステム上に作成する
     void CreateRootDirectory();
 
-    // サブディレクトリの構成を表すメモリ情報をセットする
-    void SetDirectories(vector<unique_ptr<DirectoryEntityOnLinux>> arg);
-
     // サブディレクトリの構成を表すメモリ情報を返す
     vector<unique_ptr<DirectoryEntityOnLinux>> GetDirectories();
 
     // サブディレクトリの構成に引数のメモリ情報を追加する
-    void AddDirectory(DirectoryEntityOnLinux arg);
-
-    // このインスタンスが表すディレクトリにファイルを表すメモリ情報をセットする
-    void SetFiles(vector<unique_ptr<FileEntityOnLinux>> arg);
+    void AddDirectory(unique_ptr<DirectoryEntityOnLinux> arg);
 
     // このインスタンスが表すディレクトリ直下のファイルを表すメモリ情報を返す
     vector<unique_ptr<FileEntityOnLinux>> GetFiles();
 
     // このインスタンスが表すディレクトリにファイルを表すメモリ情報を追加する
-    void AddFile(FileEntityOnLinux arg);
+    void AddFile(unique_ptr<FileEntityOnLinux> arg);
 
     // ディレクトリ作成 ( CreateRootDirectory, CreateDir ) が成功している場合 true を返す
     bool IsCreateSuccess();
@@ -146,11 +139,9 @@ public:
     // コンストラクタ
     DirectoryEntityOnLinux();
 
-    // メモリ開放メソッド
-    void Dispose();
-
     // デストラクタ
     ~DirectoryEntityOnLinux();
+
 };
 
 #endif /* SRC_DIRECTORYENTITYONLINUX_H_ */
